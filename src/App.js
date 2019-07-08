@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classes from './App.module.css';
 import Person from './Person/Person.js';
+// import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 
 class App extends Component {
   state = {
@@ -32,12 +33,6 @@ class App extends Component {
   }
 
   render() {
-    const style = {
-     
-      ':hover': {
-        
-      }
-    };
 
     let persons = null;
     let btnClass = '';
@@ -46,10 +41,13 @@ class App extends Component {
       persons = (
       <div>
         {
-          this.state.persons.map((person, index) => 
+          this.state.persons.map((person, index) =>
+          // <ErrorBoundary> 
           <Person click={this.deletePersonHandler.bind(this, index)}
           changed={(event) =>this.nameChangedHandler(event, person.id)}
-           name={person.name} age={person.age} key={person.id} />)
+           name={person.name} age={person.age} key={person.id} />
+          // </ErrorBoundary>
+           )
         } 
        </div>
       );
