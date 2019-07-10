@@ -2,16 +2,42 @@ import React, { Component } from 'react';
 import classes from './App.module.css';
 import Persons from '../Components/Persons/Persons';
 import Cockpit from '../Components/Cockpit/Cockpit';
+import withClass from '../hoc/withClass';
+import Auxilary from '../hoc/Auxilary';
 // import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    console.log('App js constructor');
+  }
   state = {
     persons: [
       {id :'1', name: 'Sai', age: 23},
       {id: '2', name: 'Sai Kumar', age: 23}
     ],
-    showPersons: false
+    showPersons: false,
+    showCockpit: true,
+    changeCounter: 0
   }
+static getDerivedStateFromProps(props, state) {
+  console.log('App js getDerivedFromProps');
+  return state;
+}
+
+componentDidMount() {
+  console.log('App js ComponentDidMount');
+}
+
+shouldComponentUpdate(nextProps, nextState) {
+  console.log('App js shouldComponentUpdate');
+  return true;
+}
+
+componentDidUpdate() {
+  console.log('App js componentDidUpdate');
+}
+
   deletePersonHandler = (personIndex) => {
     const persons = [...this.state.persons];
     persons.splice(personIndex, 1);
@@ -24,7 +50,12 @@ class App extends Component {
     person.name = event.target.value;
     const persons = [...this.state.persons];
     persons[personIndex] = person;
-    this.setState({persons: persons});
+    this.setState((prevState, props) => {
+      return {
+        persons: persons,
+        changeCounter: prevState.changeCounter + 1
+      }
+    });
   }
 
   togglePersonsHandler = () => {
@@ -44,17 +75,25 @@ class App extends Component {
     }
 
     return (
-          <div className={classes.App}>
-            <Cockpit showPersons={this.state.showPersons}
-                     persons={this.state.persons}
-                     changed={this.togglePersonsHandler}/>
-            {persons}
-            </div>
+          <Auxilary>
+          <button onClick={() => {
+            this.setState({showCockpit: false})
+          }}>Remove Cockpit</button>
+          {this.state.showCockpit ? 
+          <Cockpit
+          title={this.props.appTitle}
+          showPersons={this.state.showPersons}
+                  personLength={this.state.persons.length}
+                  changed={this.togglePersonsHandler} />
+          : null }
+         {persons}  
+            
+            </Auxilary>
         );
   }
 }
 
-export default App;
+export default withClass(App, classes.App);
 
 // import React, { useState } from 'react';
 // import './App.css';
